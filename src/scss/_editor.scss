@@ -1,0 +1,46 @@
+@use "variables";
+@use "utility";
+
+main {
+	display: flex;
+	flex-grow: 1;
+	transition: 500ms ease-in-out;
+	transform: translateX(0);
+}
+
+.editingSection {
+	display: flex;
+	flex-direction: column;
+	font-family: "Roboto Mono", monospace;
+	font-optical-sizing: auto;
+	font-style: normal;
+	flex-grow: 1;
+}
+
+.previewSection {
+	display: none;
+}
+
+.sectionHeader {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	background-color: var(--neutral-200);
+	padding: 0.5rem 1rem;
+	h2 {
+		color: var(--neutral-500);
+		letter-spacing: 2.5px;
+	}
+	button {
+		background: none;
+		border: 0;
+	}
+}
+
+#editingArea {
+	padding: 1rem;
+	border: 0;
+	width: 100vw;
+	flex-grow: 1;
+	font-family: "Roboto Mono", monospace;
+}

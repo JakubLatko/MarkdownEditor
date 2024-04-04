@@ -1,0 +1,69 @@
+.h1-md {
+	font-weight: bold;
+	font-size: 32px;
+	line-height: 42px;
+}
+
+.h2-md {
+	font-weight: light;
+	font-size: 28px;
+	line-height: 37px;
+}
+
+.h3-md {
+	font-weight: bold;
+	font-size: 24px;
+	line-height: 32px;
+}
+
+.h4-md {
+	font-weight: bold;
+	font-size: 20px;
+	line-height: 26px;
+}
+
+.h5-md {
+	font-weight: bold;
+	font-size: 16px;
+	line-height: 21px;
+}
+
+.h6-md {
+	font-weight: bold;
+	font-size: 14px;
+	line-height: 18px;
+}
+
+.edit-md {
+	font-size: 14px;
+	font-weight: normal;
+	line-height: 24px;
+	line-height: 120%;
+	// letter-spacing: 1.5px;
+}
+
+.heading-medium {
+	font-family: "Roboto", sans-serif;
+	font-size: 15px;
+	font-weight: 300;
+}
+.heading-small {
+	font-family: "Roboto", sans-serif;
+	font-size: 15px;
+	font-weight: medium;
+}
+.desktopOnly {
+	display: none;
+}
+
+.body-small {
+	font-family: "Roboto", sans-serif;
+	font-size: 13px;
+	font-weight: light;
+}
+
+@media only screen and (min-width: 1440px) {
+	.desktopOnly {
+		display: block;
+	}
+}
