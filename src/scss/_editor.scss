@@ -7,12 +7,16 @@
 	--editor-header-light: #f5f5f5;
 	--editor-background-light: #ffffff;
 	--editor-border-light: #e4e4e4;
+	--editor-markdown-light: #35393f;
+	--editor-blockquote-light: #f5f5f5;
 
 	--editor-main-text-dark: #ffffff;
 	--editor-minor-text-dark: #c1c4cb;
 	--editor-header-dark: #1d1f22;
 	--editor-background-dark: #151619;
 	--editor-border-dark: #5a6069;
+	--editor-markdown-dark: #c1c4cb;
+	--editor-blockquote-dark: #2b2d31;
 }
 
 body[data-color-scheme="light"] {
@@ -21,6 +25,8 @@ body[data-color-scheme="light"] {
 	--editor-header: #f5f5f5;
 	--editor-background: #ffffff;
 	--editor-border: #e4e4e4;
+	--editor-markdown: #35393f;
+	--editor-blockquote: #f5f5f5;
 }
 
 body[data-color-scheme="dark"] {
@@ -29,6 +35,8 @@ body[data-color-scheme="dark"] {
 	--editor-header: #1d1f22;
 	--editor-background: #151619;
 	--editor-border: #5a6069;
+	--editor-markdown: #c1c4cb;
+	--editor-blockquote: #2b2d31;
 }
 
 main {
@@ -75,7 +83,19 @@ main {
 	flex-grow: 1;
 	font-family: "Roboto Mono", monospace;
 	background-color: var(--editor-background);
+	color: var(--editor-markdown);
+	font-size: 14px;
+}
+#previewArea {
 	color: var(--editor-minor-text);
+}
+
+.previewSection h1,
+h2,
+h3,
+h4,
+h5 {
+	color: var(--editor-main-text);
 }
 
 @media only screen and (min-width: 768px) {
@@ -100,6 +120,8 @@ main {
 		border-left: 1px solid var(--editor-border);
 	}
 	#previewArea {
+		display: flex;
+		flex-direction: column;
 		width: 100%;
 		padding: 1rem;
 		flex-grow: 1;
