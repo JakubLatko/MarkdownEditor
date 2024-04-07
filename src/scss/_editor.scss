@@ -1,11 +1,42 @@
 @use "variables";
 @use "utility";
 
+:root {
+	--editor-main-text-light: #35393f;
+	--editor-minor-text-light: #7c8187;
+	--editor-header-light: #f5f5f5;
+	--editor-background-light: #ffffff;
+	--editor-border-light: #e4e4e4;
+
+	--editor-main-text-dark: #ffffff;
+	--editor-minor-text-dark: #c1c4cb;
+	--editor-header-dark: #1d1f22;
+	--editor-background-dark: #151619;
+	--editor-border-dark: #5a6069;
+}
+
+body[data-color-scheme="light"] {
+	--editor-main-text: #35393f;
+	--editor-minor-text: #7c8187;
+	--editor-header: #f5f5f5;
+	--editor-background: #ffffff;
+	--editor-border: #e4e4e4;
+}
+
+body[data-color-scheme="dark"] {
+	--editor-main-text: #ffffff;
+	--editor-minor-text: #c1c4cb;
+	--editor-header: #1d1f22;
+	--editor-background: #151619;
+	--editor-border: #5a6069;
+}
+
 main {
 	display: flex;
 	flex-grow: 1;
 	transition: 500ms ease-in-out;
 	transform: translateX(0);
+	background-color: var(--editor-background);
 }
 
 .editingSection {
@@ -25,10 +56,10 @@ main {
 	display: flex;
 	flex-direction: row;
 	justify-content: space-between;
-	background-color: var(--neutral-200);
+	background-color: var(--editor-header);
 	padding: 0.5rem 1rem;
 	h2 {
-		color: var(--neutral-500);
+		color: var(--editor-minor-text);
 		letter-spacing: 2.5px;
 	}
 	button {
@@ -43,4 +74,38 @@ main {
 	width: 100vw;
 	flex-grow: 1;
 	font-family: "Roboto Mono", monospace;
+	background-color: var(--editor-background);
+	color: var(--editor-minor-text);
+}
+
+@media only screen and (min-width: 768px) {
+	.editingSection {
+		max-width: 50%;
+		flex-grow: 0;
+		width: 50%;
+	}
+	.editingSection .sectionHeader {
+		button {
+			display: none;
+		}
+	}
+	#editingArea {
+		width: 100%;
+	}
+	.previewSection {
+		display: flex;
+		flex-direction: column;
+		max-width: 50%;
+		width: 50%;
+		border-left: 1px solid var(--editor-border);
+	}
+	#previewArea {
+		width: 100%;
+		padding: 1rem;
+		flex-grow: 1;
+		background-color: var(--editor-background);
+	}
+}
+
+@media only screen and (min-width: 1440px) {
 }

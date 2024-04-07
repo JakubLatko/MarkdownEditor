@@ -143,3 +143,25 @@ input:checked + .slider:before {
 	transform: translateX(1.4em);
 	background-color: #fff;
 }
+
+@media only screen and (min-width: 768px) {
+	aside {
+		right: 66%;
+		transform: translateX(-34vw);
+	}
+
+	.translateContent {
+		transform: translateX(34vw);
+	}
+}
+
+@media only screen and (min-width: 1440px) {
+	aside {
+		right: 83%;
+		transform: translateX(-17vw);
+	}
+
+	.translateContent {
+		transform: translateX(17vw);
+	}
+}

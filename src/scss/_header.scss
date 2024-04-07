@@ -70,3 +70,45 @@ button.menuButtonClose {
 		display: none;
 	}
 }
+@media only screen and (min-width: 768px) {
+	.headerFileInfo {
+		gap: 0.5rem;
+		div {
+			align-items: flex-start;
+			text-align: left;
+			.heading-medium {
+				padding: 0;
+			}
+			p {
+				display: block;
+				color: var(--neutral-500);
+			}
+		}
+	}
+	.headerSaveBtn {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		p {
+			display: block;
+			color: var(--neutral-100);
+		}
+	}
+}
+
+@media only screen and (min-width: 1440px) {
+	.desktopOnly {
+		display: block;
+	}
+	.headerLogoText {
+		margin-block: auto;
+		text-align: center;
+		height: fit-content;
+		color: var(--neutral-100);
+		border-right: 1px solid var(--neutral-600);
+		padding-inline: 1.5rem;
+		font-size: 15px;
+		letter-spacing: 5px;
+		font-family: "Commissioner", sans-serif;
+	}
+}

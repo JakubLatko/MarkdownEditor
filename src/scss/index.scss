@@ -9,17 +9,23 @@ html {
 	font-family: "Roboto Slab", serif;
 	font-optical-sizing: auto;
 	font-style: normal;
+	max-width: 100vw;
+	overflow-x: hidden;
 }
 
 body {
 	display: flex;
 	overflow-x: hidden;
 	max-width: 100vw;
+	background-color: var(--editor-background);
 }
 
 #root {
 	display: flex;
 	flex-direction: column;
+	max-width: 100vw;
+	overflow-x: hidden;
+	background-color: var(--editor-background);
 }
 
 .regular {

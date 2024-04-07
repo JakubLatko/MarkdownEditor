@@ -28,17 +28,31 @@ function handleMenu() {
 		headerImage?.setAttribute("src", "/assets/icon-menu.svg");
 	}
 }
-let initialTheme = false;
+let initialTheme: boolean = false;
+let checkedVar: boolean;
 function themeHandler() {
+	checkedVar = !checkedVar;
+	if (checkedVar) {
+		document.body.setAttribute("data-color-scheme", "light");
+	} else if (!checkedVar) {
+		document.body.setAttribute("data-color-scheme", "dark");
+	}
+}
+document.addEventListener("DOMContentLoaded", addDefaultTheme);
+
+function addDefaultTheme() {
 	if (
 		window.matchMedia &&
 		window.matchMedia("(prefers-color-scheme)").matches
 	) {
-		// Sprawdzenie preferowanego motywu
 		if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
 			initialTheme = false;
+			document.body.setAttribute("data-color-scheme", "dark");
+			checkedVar = false;
 		} else {
 			initialTheme = true;
+			document.body.setAttribute("data-color-scheme", "light");
+			checkedVar = true;
 		}
 	}
 }
@@ -54,11 +68,11 @@ function App() {
 						alt="Open menu"
 					/>
 				</button>
-				<h2 className="desktopOnly">MARKDOWN</h2>
+				<h2 className="desktopOnly headerLogoText">MARKDOWN</h2>
 				<div className="headerFileInfo">
 					<img src="/assets/icon-document.svg" alt="" />
 					<div>
-						<p>Document name</p>
+						<p className="body-small">Document name</p>
 						<button className="heading-medium">welcome.md</button>
 					</div>
 				</div>
@@ -67,7 +81,7 @@ function App() {
 				</button>
 				<button className="headerSaveBtn">
 					<img src="/assets/icon-save.svg" alt="Save changes" />
-					<p>Save changes</p>
+					<p className="heading-medium">Save changes</p>
 				</button>
 			</header>
 			<aside aria-expanded="false">
@@ -130,7 +144,7 @@ function App() {
 							<img src="/assets/icon-show-preview.svg" alt="" />
 						</button>
 					</div>
-					<textarea name="" id="" cols={30} rows={10}></textarea>
+					<div id="previewArea"></div>
 				</section>
 			</main>
 		</>
