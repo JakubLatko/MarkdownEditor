@@ -1,5 +1,7 @@
 import { useState } from "react";
+import { v4 as uuidv4 } from "uuid";
 import "./scss/index.scss";
+import { welcomeContent } from "./scripts/welcome";
 
 function handleMenu() {
 	const menu = document.querySelector("aside");
@@ -156,8 +158,44 @@ function createPreview() {
 		}
 	});
 }
+document.addEventListener("DOMContentLoaded", createLocalStorage);
+function createLocalStorage() {
+	let documents: document[] = [];
+	if (!localStorage.hasDeletedWelcome) {
+		let hasDeletedWelcome: boolean = false;
+		localStorage.setItem(
+			"hasDeletedWelcome",
+			JSON.stringify(hasDeletedWelcome)
+		);
+		const welcomeFile: document = {
+			id: uuidv4(),
+			createdAt: new Date(),
+			content: welcomeContent,
+			title: "welcome.md",
+		};
+		documents.push(welcomeFile);
+		localStorage.setItem("documents", JSON.stringify(documents));
+	}
+}
+
+interface document {
+	id: string;
+	createdAt: Date;
+	title: string;
+	content: string;
+}
+
+function createDoc() {
+	localStorage;
+}
 
 function App() {
+	let storedDocsRaw: string | null = localStorage.getItem("documents");
+	let storedDocsParsed: string[];
+	if (storedDocsRaw) {
+		storedDocsParsed = JSON.parse(storedDocsRaw);
+	}
+
 	const [renamingDoc, setRenamingDoc] = useState(false);
 	const [docName, setDocName] = useState<string>();
 	const renamingBtn =
@@ -179,7 +217,7 @@ function App() {
 					<img src="/assets/icon-document.svg" alt="" />
 					<div>
 						<p className="body-small">Document name</p>
-
+						{}
 						{renamingDoc ? (
 							<form
 								className="fileNameChangeForm"
@@ -237,7 +275,9 @@ function App() {
 			<aside aria-expanded="false">
 				<h2>MARKDOWN</h2>
 				<h3 className="heading-small">my documents</h3>
-				<button className="newDocBtn heading-medium">
+				<button
+					className="newDocBtn heading-medium"
+					onClick={() => createDoc()}>
 					+ New Document
 				</button>
 				<ul className="documentList">
