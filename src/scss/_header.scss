@@ -16,6 +16,10 @@ header {
 	padding: 1.25rem 1rem;
 	height: fit-content;
 	aspect-ratio: 1;
+	&:hover,
+	&:focus {
+		background-color: var(--accent);
+	}
 }
 
 button.menuButtonClose {
@@ -51,6 +55,21 @@ button.menuButtonClose {
 	border: 0;
 	margin-left: auto;
 	margin-right: 1rem;
+	&:hover,
+	&:focus {
+		svg {
+			path {
+				fill: var(--accent);
+			}
+		}
+	}
+}
+
+#renameDocInput {
+	background-color: var(--neutral-800);
+	color: var(--neutral-100);
+	border: 0;
+	border-bottom: 1px solid var(--neutral-100);
 }
 
 .headerSaveBtn {
@@ -69,7 +88,30 @@ button.menuButtonClose {
 	p {
 		display: none;
 	}
+	&:hover,
+	&:focus {
+		background-color: var(--accent-hover);
+	}
 }
+
+.acceptFileNameBtn {
+	width: 2rem;
+	aspect-ratio: 1;
+
+	img {
+		width: 100%;
+
+		aspect-ratio: 1;
+	}
+}
+
+.fileNameChangeForm {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: center;
+}
+
 @media only screen and (min-width: 768px) {
 	.headerFileInfo {
 		gap: 0.5rem;

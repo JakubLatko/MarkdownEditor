@@ -51,6 +51,18 @@
 	min-height: 1.5rem;
 }
 
+.blockquote-md {
+	padding: 1rem;
+	border-radius: 0.25rem;
+	font-weight: bold;
+	border-left: 5px solid var(--accent);
+	background-color: var(--editor-blockquote);
+	margin-block: 1rem;
+	color: var(--editor-main-text);
+	max-width: 100%;
+	word-break: break-all;
+}
+
 .ordered-element-md {
 	display: flex;
 	flex-direction: row;
@@ -107,16 +119,6 @@
 }
 .desktopOnly {
 	display: none;
-}
-
-.blockquote-md {
-	padding: 1rem;
-	border-radius: 0.25rem;
-	font-weight: bold;
-	border-left: 5px solid var(--accent);
-	background-color: var(--editor-blockquote);
-	margin-block: 1rem;
-	color: var(--editor-main-text);
 }
 
 .body-small {

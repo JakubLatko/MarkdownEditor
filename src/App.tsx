@@ -1,3 +1,4 @@
+import { useState } from "react";
 import "./scss/index.scss";
 
 function handleMenu() {
@@ -154,10 +155,15 @@ function createPreview() {
 				}
 		}
 	});
-	console.log(fileContent);
 }
 
 function App() {
+	const [renamingDoc, setRenamingDoc] = useState(false);
+	const [docName, setDocName] = useState<string>();
+	const renamingBtn =
+		document.querySelector<HTMLButtonElement>(".renamingButton");
+	const renameDocInput =
+		document.querySelector<HTMLInputElement>("renameDocInput");
 	return (
 		<>
 			<header>
@@ -173,11 +179,55 @@ function App() {
 					<img src="/assets/icon-document.svg" alt="" />
 					<div>
 						<p className="body-small">Document name</p>
-						<button className="heading-medium">welcome.md</button>
+
+						{renamingDoc ? (
+							<form
+								className="fileNameChangeForm"
+								onSubmit={(e) => {
+									e.preventDefault();
+									setDocName(renameDocInput?.value);
+									setRenamingDoc(false);
+								}}>
+								<input
+									type="text"
+									name="renameDocInput"
+									id="renameDocInput"
+									value={docName}
+								/>
+								<button
+									type="submit"
+									className="acceptFileNameBtn">
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										viewBox="0 0 448 512">
+										<g fill="#FFF">
+											<path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z" />
+										</g>
+									</svg>
+								</button>
+							</form>
+						) : (
+							<button
+								className="heading-medium renamingButton"
+								onClick={() => {
+									setDocName(renamingBtn?.innerText);
+									setRenamingDoc(true);
+								}}>
+								{docName}
+							</button>
+						)}
 					</div>
 				</div>
 				<button className="headerDeleteBtn">
-					<img src="/assets/icon-delete.svg" alt="Delete document" />
+					<svg
+						width="18"
+						height="20"
+						xmlns="http://www.w3.org/2000/svg">
+						<path
+							d="M7 16a1 1 0 0 0 1-1V9a1 1 0 1 0-2 0v6a1 1 0 0 0 1 1ZM17 4h-4V3a3 3 0 0 0-3-3H8a3 3 0 0 0-3 3v1H1a1 1 0 1 0 0 2h1v11a3 3 0 0 0 3 3h8a3 3 0 0 0 3-3V6h1a1 1 0 0 0 0-2ZM7 3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v1H7V3Zm7 14a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6h10v11Zm-3-1a1 1 0 0 0 1-1V9a1 1 0 0 0-2 0v6a1 1 0 0 0 1 1Z"
+							fill="#7C8187"
+						/>
+					</svg>
 				</button>
 				<button className="headerSaveBtn">
 					<img src="/assets/icon-save.svg" alt="Save changes" />
@@ -235,6 +285,7 @@ function App() {
 						name="editingArea"
 						id="editingArea"
 						className="edit-md"
+						spellCheck="false"
 						onChange={() => createPreview()}></textarea>
 				</section>
 				<section className="previewSection">
