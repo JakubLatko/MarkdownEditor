@@ -35,6 +35,11 @@ aside {
 	border-radius: 0.25rem;
 	width: 100%;
 	padding-block: 0.5rem;
+	&:hover,
+	&:focus {
+		background-color: var(--accent-hover);
+		cursor: pointer;
+	}
 }
 
 .documentList {

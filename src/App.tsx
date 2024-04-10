@@ -2,7 +2,9 @@ import { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import "./scss/index.scss";
 import { welcomeContent } from "./scripts/welcome";
-
+import createDocument from "./scripts/createDocument";
+import formatDate from "./scripts/formatDate";
+import type { document } from "./types/document";
 function handleMenu() {
 	const menu = document.querySelector("aside");
 	const header = document.querySelector("header");
@@ -41,8 +43,8 @@ function themeHandler() {
 		document.body.setAttribute("data-color-scheme", "dark");
 	}
 }
-document.addEventListener("DOMContentLoaded", addDefaultTheme);
 
+document.addEventListener("DOMContentLoaded", addDefaultTheme);
 function addDefaultTheme() {
 	if (
 		window.matchMedia &&
@@ -159,7 +161,25 @@ function createPreview() {
 	});
 }
 document.addEventListener("DOMContentLoaded", createLocalStorage);
-function createLocalStorage() {
+function populateSiteOnStart() {
+	let localStorageRaw = localStorage.getItem("documents");
+	const editingArea = document.querySelector(".editingSection");
+	const renamingBtn =
+		document.querySelector<HTMLButtonElement>(".renamingButton");
+	console.log(editingArea);
+	console.log(renamingBtn);
+	if (!localStorageRaw || !editingArea)
+		return "You have no files! Create one.";
+	console.log("tez jest");
+	let localStorageParsed: document[] = JSON.parse(localStorageRaw);
+	console.log(localStorageParsed[0].content);
+
+	// editingArea.value = localStorageParsed[0].content;
+	// editingArea.value += "dupa jasia ";
+	// editingArea.textContent.trimEnd();
+	setTimeout(createPreview, 500);
+}
+async function createLocalStorage() {
 	let documents: document[] = [];
 	if (!localStorage.hasDeletedWelcome) {
 		let hasDeletedWelcome: boolean = false;
@@ -167,9 +187,10 @@ function createLocalStorage() {
 			"hasDeletedWelcome",
 			JSON.stringify(hasDeletedWelcome)
 		);
+		const newDate = await formatDate(new Date());
 		const welcomeFile: document = {
 			id: uuidv4(),
-			createdAt: new Date(),
+			createdAt: newDate,
 			content: welcomeContent,
 			title: "welcome.md",
 		};
@@ -178,30 +199,29 @@ function createLocalStorage() {
 	}
 }
 
-interface document {
-	id: string;
-	createdAt: Date;
-	title: string;
-	content: string;
-}
-
-function createDoc() {
-	localStorage;
-}
-
 function App() {
-	let storedDocsRaw: string | null = localStorage.getItem("documents");
-	let storedDocsParsed: string[];
-	if (storedDocsRaw) {
-		storedDocsParsed = JSON.parse(storedDocsRaw);
-	}
+	let localStorageRaw = localStorage.getItem("documents");
+	if (!localStorageRaw) return "You have no files! Create one.";
+	let localStorageParsed: document[] = JSON.parse(localStorageRaw);
 
 	const [renamingDoc, setRenamingDoc] = useState(false);
-	const [docName, setDocName] = useState<string>();
+	const [docName, setDocName] = useState<string>(localStorageParsed[0].title);
+	const [documentContent, setDocumentContent] = useState<string | null>(null);
+
 	const renamingBtn =
 		document.querySelector<HTMLButtonElement>(".renamingButton");
-	const renameDocInput =
-		document.querySelector<HTMLInputElement>("renameDocInput");
+
+	function loadDocument(element: document) {
+		setDocName(element.title);
+		setDocumentContent(element.content);
+		const editingArea = document.querySelector("#editingArea");
+		console.log(editingArea);
+
+		if (!editingArea) return;
+		editingArea.textContent = documentContent;
+		if (editingArea.textContent) createPreview();
+	}
+
 	return (
 		<>
 			<header>
@@ -217,20 +237,30 @@ function App() {
 					<img src="/assets/icon-document.svg" alt="" />
 					<div>
 						<p className="body-small">Document name</p>
-						{}
+
 						{renamingDoc ? (
 							<form
 								className="fileNameChangeForm"
 								onSubmit={(e) => {
+									const renameDocInput =
+										document.querySelector<HTMLInputElement>(
+											"#renameDocInput"
+										);
+									console.log(renameDocInput?.value);
 									e.preventDefault();
-									setDocName(renameDocInput?.value);
+									if (renameDocInput?.value) {
+										console.log(renameDocInput?.value);
+
+										setDocName(renameDocInput?.value);
+									}
 									setRenamingDoc(false);
 								}}>
 								<input
 									type="text"
 									name="renameDocInput"
 									id="renameDocInput"
-									value={docName}
+									defaultValue={docName}
+									className="heading-medium"
 								/>
 								<button
 									type="submit"
@@ -248,7 +278,9 @@ function App() {
 							<button
 								className="heading-medium renamingButton"
 								onClick={() => {
-									setDocName(renamingBtn?.innerText);
+									if (renamingBtn?.innerText) {
+										setDocName(renamingBtn?.innerText);
+									}
 									setRenamingDoc(true);
 								}}>
 								{docName}
@@ -277,28 +309,27 @@ function App() {
 				<h3 className="heading-small">my documents</h3>
 				<button
 					className="newDocBtn heading-medium"
-					onClick={() => createDoc()}>
+					onClick={() => createDocument()}>
 					+ New Document
 				</button>
 				<ul className="documentList">
-					<li className="documentListItem">
-						<img src="/assets/icon-document.svg" alt="" />
-						<div>
-							<p className="body-small">01 April 2024</p>
-							<button className="heading-medium">
-								untitled-document.md
-							</button>
-						</div>
-					</li>
-					<li className="documentListItem">
-						<img src="/assets/icon-document.svg" alt="" />
-						<div>
-							<p className="body-small">01 April 2024</p>
-							<button className="heading-medium">
-								welcome.md
-							</button>
-						</div>
-					</li>
+					{localStorageParsed.map((element) => {
+						return (
+							<li key={element.id} className="documentListItem">
+								<img src="/assets/icon-document.svg" alt="" />
+								<div>
+									<p className="body-small">
+										{element.createdAt}
+									</p>
+									<button
+										className="heading-medium"
+										onClick={() => loadDocument(element)}>
+										{element.title}
+									</button>
+								</div>
+							</li>
+						);
+					})}
 				</ul>
 				<div className="themeSwitchWrapper">
 					<img src="/assets/icon-dark-mode.svg" alt="" />
@@ -326,6 +357,8 @@ function App() {
 						id="editingArea"
 						className="edit-md"
 						spellCheck="false"
+						// defaultValue={localStorageParsed[0].content}
+						onLoadedData={() => {}}
 						onChange={() => createPreview()}></textarea>
 				</section>
 				<section className="previewSection">
