@@ -44,7 +44,10 @@ main {
 	flex-grow: 1;
 	transition: 500ms ease-in-out;
 	transform: translateX(0);
+	margin-top: 4rem;
+	overflow-y: hidden;
 	background-color: var(--editor-background);
+	position: relative;
 }
 
 .editingSection {
@@ -63,15 +66,25 @@ main {
 .sectionHeader {
 	display: flex;
 	flex-direction: row;
+	position: fixed;
+	top: 0;
+	left: 50%;
+	right: 0;
 	justify-content: space-between;
 	background-color: var(--editor-header);
 	padding: 0.5rem 1rem;
+	border-left: 1px solid var(--editor-border);
 	h2 {
 		color: var(--editor-minor-text);
 		letter-spacing: 2.5px;
 	}
 	button {
 		background: none;
+		border: 0;
+	}
+	&:last-of-type {
+		left: 0;
+		right: 50%;
 		border: 0;
 	}
 }

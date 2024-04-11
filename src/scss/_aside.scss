@@ -4,7 +4,7 @@
 aside {
 	display: flex;
 	flex-direction: column;
-	position: absolute;
+	position: fixed;
 	background-color: var(--neutral-900);
 	left: 0;
 	top: 0;

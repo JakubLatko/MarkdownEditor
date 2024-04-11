@@ -1,0 +1,44 @@
+.deleteDialog {
+	background-color: var(--editor-header);
+	// font-family: "Roboto Slab", serif;
+	border-radius: 0.25rem;
+	border: 0;
+	padding: 1.5rem;
+	display: flex;
+	flex-direction: column;
+	margin-inline: auto;
+	max-width: 350px;
+	h2 {
+		font-size: 20px;
+	}
+	p {
+		color: var(--editor-markdown);
+		margin-block: 1rem 1rem;
+		line-height: 200%;
+		font-size: 14px;
+	}
+	button {
+		background-color: var(--accent);
+		border: 0;
+		color: var(--editor-main-text);
+		padding: 0.5rem;
+		border-radius: 5px;
+		&:hover,
+		&:focus {
+			background-color: var(--accent-hover);
+			cursor: pointer;
+		}
+	}
+	::backdrop {
+		background-image: black;
+		opacity: 0;
+		// background-image: linear-gradient(
+		// 	45deg,
+		// 	magenta,
+		// 	rebeccapurple,
+		// 	dodgerblue,
+		// 	green
+		// );
+		// opacity: 0;
+	}
+}
