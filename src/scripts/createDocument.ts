@@ -10,7 +10,7 @@ export default async function createDocument() {
 		id: uuidv4(),
 		title: "untitled-document",
 		createdAt: newDate,
-		content: "",
+		content: `${Date.now()}`,
 	};
 	localStorageParsed.push(newDoc);
 	localStorage.documents = JSON.stringify(localStorageParsed);

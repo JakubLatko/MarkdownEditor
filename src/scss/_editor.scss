@@ -98,9 +98,12 @@ main {
 	background-color: var(--editor-background);
 	color: var(--editor-markdown);
 	font-size: 14px;
+	margin-top: 2.5rem;
+	outline: 0;
 }
 #previewArea {
 	color: var(--editor-minor-text);
+	margin-top: 2.5rem;
 }
 
 .previewSection h1,
