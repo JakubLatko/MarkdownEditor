@@ -2,13 +2,9 @@ import { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import "./scss/index.scss";
 import { welcomeContent } from "./scripts/welcome";
-import createDocument from "./scripts/createDocument";
+
 import formatDate from "./scripts/formatDate";
 import type { document } from "./types/document";
-
-const deleteDialog = document.querySelector(
-	".deleteDialog"
-) as HTMLDialogElement;
 
 function handleMenu() {
 	const menu = document.querySelector("aside");
@@ -189,62 +185,123 @@ async function createLocalStorage() {
 }
 
 function App() {
+	let firstTimeRender = true;
+
 	let localStorageRaw = localStorage.getItem("documents");
 	if (!localStorageRaw) return "You have no files! Create one.";
 	let localStorageParsed: document[] = JSON.parse(localStorageRaw);
-
 	const [renamingDoc, setRenamingDoc] = useState(false);
-	const [docName, setDocName] = useState<string>(localStorageParsed[0].title);
-	const [documentContent, setDocumentContent] = useState<string | null>(null);
+	const [documentName, setDocumentName] = useState<string>();
+	const [documentContent, setDocumentContent] = useState<string | null>();
+	const [listOfDocument, setListOfDocuments] =
+		useState<document[]>(localStorageParsed);
 
 	const renamingBtn =
 		document.querySelector<HTMLButtonElement>(".renamingButton");
 
 	function loadDocument(element: document) {
-		setDocName(element.title);
+		setDocumentName(element.title);
 		setDocumentContent(element.content);
-		const editingArea = document.querySelector("#editingArea");
-		console.log(editingArea);
+		console.log(documentName);
+		console.log(documentContent);
 
-		if (!editingArea) return;
-		editingArea.textContent = documentContent;
-		if (editingArea.textContent) createPreview();
-	}
+		// let localStorageRaw = localStorage.getItem("documents");
+		// if (!localStorageRaw) return;
+		// let localStorageParsed: document[] = JSON.parse(localStorageRaw);
 
-	useEffect(() => {
-		let localStorageRaw = localStorage.getItem("documents");
 		const editingArea = document.querySelector(
 			"#editingArea"
 		) as HTMLTextAreaElement;
 
+		if (!editingArea || !documentContent) return;
+		editingArea.value = "";
+		editingArea.value = documentContent;
+		if (editingArea.textContent) createPreview;
+	}
+
+	async function createDocument() {
+		let localStorageRaw = localStorage.getItem("documents");
+		if (!localStorageRaw) return;
+		let localStorageParsed: document[] = JSON.parse(localStorageRaw);
+		const newDate = await formatDate(new Date());
+		let newDoc: document = {
+			id: uuidv4(),
+			title: "untitled-document",
+			createdAt: newDate,
+			content: `${Date.now()}`,
+		};
+		localStorageParsed.push(newDoc);
+		localStorage.documents = JSON.stringify(localStorageParsed);
+		setListOfDocuments(localStorageParsed);
+	}
+
+	useEffect(() => {
+		console.log("zadzialalo");
+
+		let localStorageRaw = localStorage.getItem("documents");
+
+		const editingArea = document.querySelector(
+			"#editingArea"
+		) as HTMLTextAreaElement;
 		if (!localStorageRaw || !editingArea) return;
 		let localStorageParsed: document[] = JSON.parse(localStorageRaw);
-		// console.log(localStorageParsed[0].content);
+		setDocumentName(localStorageParsed[0].title);
+		setDocumentContent(localStorageParsed[0].content);
+		// setDocumentName(localStorageParsed[0].title);
+		// setDocumentContent(localStorageParsed[0].content);
 		editingArea.value = localStorageParsed[0].content;
-		editingArea.innerText += "dupa jasia ";
+		editingArea.innerText += " ";
 		if (!editingArea.textContent || !editingArea) return;
-		editingArea.textContent.trimEnd();
+		// editingArea.textContent.trimEnd();
+		firstTimeRender = false;
 		setTimeout(createPreview, 1);
-	}, []);
-	useEffect(renderMenuItems, []);
+	}, [firstTimeRender]);
+	firstTimeRender = false;
 
-	function renderMenuItems() {
-		localStorageParsed.map((element) => {
-			return (
-				<li key={element.id} className="documentListItem">
-					<img src="/assets/icon-document.svg" alt="" />
-					<div>
-						<p className="body-small">{element.createdAt}</p>
-						<button
-							className="heading-medium"
-							onClick={() => loadDocument(element)}>
-							{element.title}
-						</button>
-					</div>
-				</li>
-			);
-		});
-	}
+	// useEffect(() => {
+	// 	let documentList = document.querySelector(".documentList");
+	// 	let localStorageRaw = localStorage.getItem("documents");
+	// 	if (!localStorageRaw || !documentList) return;
+	// 	let localStorageParsed: document[] = JSON.parse(localStorageRaw);
+	// 	documentList.innerHTML = "";
+	// 	localStorageParsed.forEach((element) => {
+	// 		let toAppend = <li></li>
+	// 		toAppend = `${(
+	// 			<li key={element.id} className="documentListItem">
+	// 				<img src="/assets/icon-document.svg" alt="" />
+	// 				<div>
+	// 					<p className="body-small">{element.createdAt}</p>
+	// 					<button
+	// 						className="heading-medium"
+	// 						onClick={() => loadDocument(element)}>
+	// 						{element.title}
+	// 					</button>
+	// 				</div>
+	// 			</li>
+	// 		)}`;
+	// 		console.log(toAppend);
+	// 		documentList.append(toAppend);
+	// 	});
+	// }, [loadDocument]);
+
+	// function renderMenuItems() {
+	// 	localStorageParsed.map((element) => {
+	// 		return (
+	// 			<li key={element.id} className="documentListItem">
+	// 				<img src="/assets/icon-document.svg" alt="" />
+	// 				<div>
+	// 					<p className="body-small">{element.createdAt}</p>
+	// 					<button
+	// 						className="heading-medium"
+	// 						onClick={() => loadDocument(element)}>
+	// 						{element.title}
+	// 					</button>
+	// 				</div>
+	// 			</li>
+	// 		);
+	// 	});
+	// }
+
 	return (
 		<>
 			<header>
@@ -274,7 +331,7 @@ function App() {
 									if (renameDocInput?.value) {
 										console.log(renameDocInput?.value);
 
-										setDocName(renameDocInput?.value);
+										setDocumentName(renameDocInput?.value);
 									}
 									setRenamingDoc(false);
 								}}>
@@ -282,7 +339,7 @@ function App() {
 									type="text"
 									name="renameDocInput"
 									id="renameDocInput"
-									defaultValue={docName}
+									defaultValue={documentName}
 									className="heading-medium"
 								/>
 								<button
@@ -302,11 +359,11 @@ function App() {
 								className="heading-medium renamingButton"
 								onClick={() => {
 									if (renamingBtn?.innerText) {
-										setDocName(renamingBtn?.innerText);
+										setDocumentName(renamingBtn?.innerText);
 									}
 									setRenamingDoc(true);
 								}}>
-								{docName}
+								{documentName}
 							</button>
 						)}
 					</div>
@@ -314,8 +371,12 @@ function App() {
 				<button
 					className="headerDeleteBtn"
 					onClick={() => {
+						const deleteDialog = document.querySelector(
+							"#deleteDialog"
+						) as HTMLDialogElement;
 						if (!deleteDialog) return;
-						deleteDialog.showModal();
+
+						deleteDialog.show();
 					}}>
 					<svg
 						width="18"
@@ -340,7 +401,42 @@ function App() {
 					onClick={() => createDocument()}>
 					+ New Document
 				</button>
-				<ul className="documentList">{}</ul>
+				<ul className="documentList">
+					{listOfDocument?.map((element) => {
+						return (
+							<li key={element.id} className="documentListItem">
+								<img src="/assets/icon-document.svg" alt="" />
+								<div>
+									<p className="body-small">
+										{element.createdAt}
+									</p>
+									<button
+										className="heading-medium"
+										onClick={() => loadDocument(element)}>
+										{element.title}
+									</button>
+								</div>
+							</li>
+						);
+					})}
+					{/* {localStorageParsed.map((element) => {
+						return (
+							<li key={element.id} className="documentListItem">
+								<img src="/assets/icon-document.svg" alt="" />
+								<div>
+									<p className="body-small">
+										{element.createdAt}
+									</p>
+									<button
+										className="heading-medium"
+										onClick={() => loadDocument(element)}>
+										{element.title}
+									</button>
+								</div>
+							</li>
+						);
+					})} */}
+				</ul>
 				<div className="themeSwitchWrapper">
 					<img src="/assets/icon-dark-mode.svg" alt="" />
 					<label className="switch">
@@ -381,14 +477,18 @@ function App() {
 					<div id="previewArea"></div>
 				</section>
 			</main>
-			<dialog className="deleteDialog">
+			<dialog className="deleteDialog" id="deleteDialog">
 				<h2>Delete this document?</h2>
 				<p>
-					Are you sure you want to delete the ‘{docName}’ document and
-					its contents? This action cannot be reversed.
+					Are you sure you want to delete the ‘{documentName}’
+					document and its contents? This action cannot be reversed.
 				</p>
 				<button
 					onClick={() => {
+						const deleteDialog = document.querySelector(
+							"#deleteDialog"
+						) as HTMLDialogElement;
+
 						if (!deleteDialog) return;
 						deleteDialog.close();
 					}}>
