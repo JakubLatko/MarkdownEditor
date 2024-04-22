@@ -100,10 +100,12 @@ main {
 	font-size: 14px;
 	margin-top: 2.5rem;
 	outline: 0;
+	overflow-y: hidden;
 }
 #previewArea {
 	color: var(--editor-minor-text);
 	margin-top: 2.5rem;
+	overflow-y: hidden;
 }
 
 .previewSection h1,

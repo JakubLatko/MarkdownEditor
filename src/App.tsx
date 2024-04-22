@@ -190,8 +190,10 @@ function App() {
 	let localStorageRaw = localStorage.getItem("documents");
 	if (!localStorageRaw) return "You have no files! Create one.";
 	let localStorageParsed: document[] = JSON.parse(localStorageRaw);
+
 	const [renamingDoc, setRenamingDoc] = useState(false);
 	const [documentName, setDocumentName] = useState<string>();
+	const [documentID, setDocumentID] = useState<string>();
 	const [documentContent, setDocumentContent] = useState<string | null>();
 	const [listOfDocument, setListOfDocuments] =
 		useState<document[]>(localStorageParsed);
@@ -199,25 +201,29 @@ function App() {
 	const renamingBtn =
 		document.querySelector<HTMLButtonElement>(".renamingButton");
 
-	function loadDocument(element: document) {
-		setDocumentName(element.title);
-		setDocumentContent(element.content);
-		console.log(documentName);
-		console.log(documentContent);
+	// function loadDocument(element: document) {
+	// 	setDocumentName(element.title);
+	// 	setDocumentContent(element.content);
+	// 	// console.log(documentName);
+	// 	// console.log(documentContent);
 
-		// let localStorageRaw = localStorage.getItem("documents");
-		// if (!localStorageRaw) return;
-		// let localStorageParsed: document[] = JSON.parse(localStorageRaw);
+	// 	// let localStorageRaw = localStorage.getItem("documents");
+	// 	// if (!localStorageRaw) return;
+	// 	// // let localStorageParsed: document[] = JSON.parse(localStorageRaw);
 
-		const editingArea = document.querySelector(
-			"#editingArea"
-		) as HTMLTextAreaElement;
+	// 	// const editingArea = document.querySelector(
+	// 	// 	"#editingArea"
+	// 	// ) as HTMLTextAreaElement;
 
-		if (!editingArea || !documentContent) return;
-		editingArea.value = "";
-		editingArea.value = documentContent;
-		if (editingArea.textContent) createPreview;
-	}
+	// 	// if (!editingArea || !documentContent) return;
+	// 	// editingArea.value = "";
+	// 	// editingArea.value = documentContent;
+	// 	// editingArea.innerText += " ";
+	// 	// if (!editingArea.textContent || !editingArea) return;
+	// 	// // editingArea.textContent.trimEnd();
+	// 	// setTimeout(createPreview, 1);
+	// 	// // if (editingArea.textContent) createPreview;
+	// }
 
 	async function createDocument() {
 		let localStorageRaw = localStorage.getItem("documents");
@@ -234,10 +240,22 @@ function App() {
 		localStorage.documents = JSON.stringify(localStorageParsed);
 		setListOfDocuments(localStorageParsed);
 	}
+	useEffect(() => {
+		const editingArea = document.querySelector(
+			"#editingArea"
+		) as HTMLTextAreaElement;
+
+		if (!editingArea || !documentContent) return;
+		editingArea.value = "";
+		editingArea.value = documentContent;
+		editingArea.innerText += " ";
+		if (!editingArea.textContent || !editingArea) return;
+		// editingArea.textContent.trimEnd();
+		setTimeout(createPreview, 1);
+		// if (editingArea.textContent) createPreview;
+	}, [documentContent]);
 
 	useEffect(() => {
-		console.log("zadzialalo");
-
 		let localStorageRaw = localStorage.getItem("documents");
 
 		const editingArea = document.querySelector(
@@ -247,6 +265,8 @@ function App() {
 		let localStorageParsed: document[] = JSON.parse(localStorageRaw);
 		setDocumentName(localStorageParsed[0].title);
 		setDocumentContent(localStorageParsed[0].content);
+		setDocumentID(localStorageParsed[0].id);
+		setListOfDocuments(localStorageParsed);
 		// setDocumentName(localStorageParsed[0].title);
 		// setDocumentContent(localStorageParsed[0].content);
 		editingArea.value = localStorageParsed[0].content;
@@ -285,21 +305,28 @@ function App() {
 	// }, [loadDocument]);
 
 	// function renderMenuItems() {
-	// 	localStorageParsed.map((element) => {
-	// 		return (
-	// 			<li key={element.id} className="documentListItem">
-	// 				<img src="/assets/icon-document.svg" alt="" />
-	// 				<div>
-	// 					<p className="body-small">{element.createdAt}</p>
-	// 					<button
-	// 						className="heading-medium"
-	// 						onClick={() => loadDocument(element)}>
-	// 						{element.title}
-	// 					</button>
-	// 				</div>
-	// 			</li>
-	// 		);
-	// 	});
+	// 	{
+	// 		listOfDocument?.map((element) => {
+	// 			return (
+	// 				<li key={element.id} className="documentListItem">
+	// 					<img src="/assets/icon-document.svg" alt="" />
+	// 					<div>
+	// 						<p className="body-small">{element.createdAt}</p>
+	// 						<button
+	// 							className="heading-medium"
+	// 							onClick={() => {
+	// 								setDocumentName(element.title);
+	// 								setDocumentContent(element.content);
+	// 								setDocumentID(element.id);
+	// 								// loadDocument(element)
+	// 							}}>
+	// 							{element.title}
+	// 						</button>
+	// 					</div>
+	// 				</li>
+	// 			);
+	// 		});
+	// 	}
 	// }
 
 	return (
@@ -322,15 +349,33 @@ function App() {
 							<form
 								className="fileNameChangeForm"
 								onSubmit={(e) => {
+									e.preventDefault();
+
 									const renameDocInput =
 										document.querySelector<HTMLInputElement>(
 											"#renameDocInput"
 										);
-									console.log(renameDocInput?.value);
-									e.preventDefault();
+									if (
+										!renameDocInput ||
+										!renameDocInput.value
+									)
+										return;
+									localStorageParsed.forEach((document) => {
+										if (document.id === documentID) {
+											document.title =
+												renameDocInput.value;
+											setListOfDocuments(
+												localStorageParsed
+											);
+											localStorage.setItem(
+												"documents",
+												JSON.stringify(
+													localStorageParsed
+												)
+											);
+										}
+									});
 									if (renameDocInput?.value) {
-										console.log(renameDocInput?.value);
-
 										setDocumentName(renameDocInput?.value);
 									}
 									setRenamingDoc(false);
@@ -388,7 +433,24 @@ function App() {
 						/>
 					</svg>
 				</button>
-				<button className="headerSaveBtn">
+				<button
+					className="headerSaveBtn"
+					onClick={() =>
+						localStorageParsed.forEach((document) => {
+							if (document.id === documentID) {
+								console.log("no jest");
+
+								if (documentContent) {
+									document.content = documentContent;
+									console.log("no jest docContent");
+									localStorage.setItem(
+										"documents",
+										JSON.stringify(localStorageParsed)
+									);
+								}
+							}
+						})
+					}>
 					<img src="/assets/icon-save.svg" alt="Save changes" />
 					<p className="heading-medium">Save changes</p>
 				</button>
@@ -412,30 +474,19 @@ function App() {
 									</p>
 									<button
 										className="heading-medium"
-										onClick={() => loadDocument(element)}>
+										onClick={() => {
+											setDocumentName(element.title);
+											setDocumentContent(element.content);
+											setDocumentID(element.id);
+
+											// loadDocument(element)
+										}}>
 										{element.title}
 									</button>
 								</div>
 							</li>
 						);
 					})}
-					{/* {localStorageParsed.map((element) => {
-						return (
-							<li key={element.id} className="documentListItem">
-								<img src="/assets/icon-document.svg" alt="" />
-								<div>
-									<p className="body-small">
-										{element.createdAt}
-									</p>
-									<button
-										className="heading-medium"
-										onClick={() => loadDocument(element)}>
-										{element.title}
-									</button>
-								</div>
-							</li>
-						);
-					})} */}
 				</ul>
 				<div className="themeSwitchWrapper">
 					<img src="/assets/icon-dark-mode.svg" alt="" />
@@ -463,7 +514,6 @@ function App() {
 						id="editingArea"
 						className="edit-md"
 						spellCheck="false"
-						// defaultValue={localStorageParsed[0].content}
 						onLoadedData={() => {}}
 						onChange={() => createPreview()}></textarea>
 				</section>
