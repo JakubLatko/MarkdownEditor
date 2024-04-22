@@ -6,6 +6,13 @@ import { welcomeContent } from "./scripts/welcome";
 import formatDate from "./scripts/formatDate";
 import type { document } from "./types/document";
 
+// TODO:
+// 1. zrobic tak by spacje miogly byc wielokrotne
+// 2. Delete button
+// 3. Preview button
+// 4. By otwieral sie ostatni plik
+// 5.
+
 function handleMenu() {
 	const menu = document.querySelector("aside");
 	const header = document.querySelector("header");
@@ -35,20 +42,36 @@ function handleMenu() {
 	}
 }
 
+function handlePreviewButton() {}
+
 let initialTheme: boolean = false;
 let checkedVar: boolean;
+
 function themeHandler() {
 	checkedVar = !checkedVar;
 	if (checkedVar) {
 		document.body.setAttribute("data-color-scheme", "light");
+		localStorage.setItem("theme", "light");
 	} else if (!checkedVar) {
 		document.body.setAttribute("data-color-scheme", "dark");
+		localStorage.setItem("theme", "dark");
 	}
 }
 
 document.addEventListener("DOMContentLoaded", addDefaultTheme);
 function addDefaultTheme() {
-	if (
+	let localStorageThemeRaw = localStorage.getItem("theme");
+	if (localStorageThemeRaw !== null) {
+		if (localStorageThemeRaw === "dark") {
+			initialTheme = false;
+			document.body.setAttribute("data-color-scheme", "dark");
+			checkedVar = false;
+		} else if (localStorageThemeRaw === "light") {
+			initialTheme = true;
+			document.body.setAttribute("data-color-scheme", "light");
+			checkedVar = true;
+		}
+	} else if (
 		window.matchMedia &&
 		window.matchMedia("(prefers-color-scheme)").matches
 	) {
@@ -201,30 +224,6 @@ function App() {
 	const renamingBtn =
 		document.querySelector<HTMLButtonElement>(".renamingButton");
 
-	// function loadDocument(element: document) {
-	// 	setDocumentName(element.title);
-	// 	setDocumentContent(element.content);
-	// 	// console.log(documentName);
-	// 	// console.log(documentContent);
-
-	// 	// let localStorageRaw = localStorage.getItem("documents");
-	// 	// if (!localStorageRaw) return;
-	// 	// // let localStorageParsed: document[] = JSON.parse(localStorageRaw);
-
-	// 	// const editingArea = document.querySelector(
-	// 	// 	"#editingArea"
-	// 	// ) as HTMLTextAreaElement;
-
-	// 	// if (!editingArea || !documentContent) return;
-	// 	// editingArea.value = "";
-	// 	// editingArea.value = documentContent;
-	// 	// editingArea.innerText += " ";
-	// 	// if (!editingArea.textContent || !editingArea) return;
-	// 	// // editingArea.textContent.trimEnd();
-	// 	// setTimeout(createPreview, 1);
-	// 	// // if (editingArea.textContent) createPreview;
-	// }
-
 	async function createDocument() {
 		let localStorageRaw = localStorage.getItem("documents");
 		if (!localStorageRaw) return;
@@ -240,6 +239,7 @@ function App() {
 		localStorage.documents = JSON.stringify(localStorageParsed);
 		setListOfDocuments(localStorageParsed);
 	}
+
 	useEffect(() => {
 		const editingArea = document.querySelector(
 			"#editingArea"
@@ -267,67 +267,13 @@ function App() {
 		setDocumentContent(localStorageParsed[0].content);
 		setDocumentID(localStorageParsed[0].id);
 		setListOfDocuments(localStorageParsed);
-		// setDocumentName(localStorageParsed[0].title);
-		// setDocumentContent(localStorageParsed[0].content);
+
 		editingArea.value = localStorageParsed[0].content;
 		editingArea.innerText += " ";
 		if (!editingArea.textContent || !editingArea) return;
-		// editingArea.textContent.trimEnd();
 		firstTimeRender = false;
 		setTimeout(createPreview, 1);
 	}, [firstTimeRender]);
-	firstTimeRender = false;
-
-	// useEffect(() => {
-	// 	let documentList = document.querySelector(".documentList");
-	// 	let localStorageRaw = localStorage.getItem("documents");
-	// 	if (!localStorageRaw || !documentList) return;
-	// 	let localStorageParsed: document[] = JSON.parse(localStorageRaw);
-	// 	documentList.innerHTML = "";
-	// 	localStorageParsed.forEach((element) => {
-	// 		let toAppend = <li></li>
-	// 		toAppend = `${(
-	// 			<li key={element.id} className="documentListItem">
-	// 				<img src="/assets/icon-document.svg" alt="" />
-	// 				<div>
-	// 					<p className="body-small">{element.createdAt}</p>
-	// 					<button
-	// 						className="heading-medium"
-	// 						onClick={() => loadDocument(element)}>
-	// 						{element.title}
-	// 					</button>
-	// 				</div>
-	// 			</li>
-	// 		)}`;
-	// 		console.log(toAppend);
-	// 		documentList.append(toAppend);
-	// 	});
-	// }, [loadDocument]);
-
-	// function renderMenuItems() {
-	// 	{
-	// 		listOfDocument?.map((element) => {
-	// 			return (
-	// 				<li key={element.id} className="documentListItem">
-	// 					<img src="/assets/icon-document.svg" alt="" />
-	// 					<div>
-	// 						<p className="body-small">{element.createdAt}</p>
-	// 						<button
-	// 							className="heading-medium"
-	// 							onClick={() => {
-	// 								setDocumentName(element.title);
-	// 								setDocumentContent(element.content);
-	// 								setDocumentID(element.id);
-	// 								// loadDocument(element)
-	// 							}}>
-	// 							{element.title}
-	// 						</button>
-	// 					</div>
-	// 				</li>
-	// 			);
-	// 		});
-	// 	}
-	// }
 
 	return (
 		<>
@@ -436,13 +382,14 @@ function App() {
 				<button
 					className="headerSaveBtn"
 					onClick={() =>
-						localStorageParsed.forEach((document) => {
-							if (document.id === documentID) {
-								console.log("no jest");
+						localStorageParsed.forEach((doc) => {
+							if (doc.id === documentID) {
+								const editingArea = document.querySelector(
+									"#editingArea"
+								) as HTMLTextAreaElement;
 
-								if (documentContent) {
-									document.content = documentContent;
-									console.log("no jest docContent");
+								if (documentContent && editingArea.value) {
+									doc.content = editingArea.value;
 									localStorage.setItem(
 										"documents",
 										JSON.stringify(localStorageParsed)
@@ -478,7 +425,7 @@ function App() {
 											setDocumentName(element.title);
 											setDocumentContent(element.content);
 											setDocumentID(element.id);
-
+											handleMenu();
 											// loadDocument(element)
 										}}>
 										{element.title}
@@ -534,11 +481,57 @@ function App() {
 					document and its contents? This action cannot be reversed.
 				</p>
 				<button
+					className="deleteDialog__negativeBtn"
 					onClick={() => {
 						const deleteDialog = document.querySelector(
 							"#deleteDialog"
 						) as HTMLDialogElement;
 
+						if (!deleteDialog) return;
+						deleteDialog.close();
+					}}>
+					<svg
+						width="24"
+						height="24"
+						xmlns="http://www.w3.org/2000/svg">
+						<g fillRule="evenodd">
+							<path d="M2.1.686 23.315 21.9l-1.415 1.415L.686 2.1z" />
+							<path d="M.686 21.9 21.9.685l1.415 1.415L2.1 23.314z" />
+						</g>
+					</svg>
+				</button>
+				<button
+					onClick={() => {
+						const deleteDialog = document.querySelector(
+							"#deleteDialog"
+						) as HTMLDialogElement;
+						const editingArea = document.querySelector(
+							"#editingArea"
+						) as HTMLTextAreaElement;
+						localStorageParsed.forEach((doc, index) => {
+							if (doc.id === documentID) {
+								localStorageParsed.splice(index, 1);
+								setListOfDocuments(localStorageParsed);
+								setDocumentName(localStorageParsed[0].title);
+								setDocumentContent(
+									localStorageParsed[0].content
+								);
+								setDocumentID(localStorageParsed[0].id);
+								setListOfDocuments(localStorageParsed);
+
+								editingArea.value =
+									localStorageParsed[0].content;
+								editingArea.innerText += " ";
+								if (!editingArea.textContent || !editingArea)
+									return;
+								firstTimeRender = false;
+								setTimeout(createPreview, 1);
+								localStorage.setItem(
+									"documents",
+									JSON.stringify(localStorageParsed)
+								);
+							}
+						});
 						if (!deleteDialog) return;
 						deleteDialog.close();
 					}}>

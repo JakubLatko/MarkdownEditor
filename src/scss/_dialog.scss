@@ -1,6 +1,6 @@
 .deleteDialog[open] {
 	background-color: var(--editor-header);
-	// font-family: "Roboto Slab", serif;
+
 	border-radius: 0.25rem;
 	border: 0;
 	padding: 1.5rem;
@@ -8,9 +8,9 @@
 	flex-direction: column;
 	margin-block: auto;
 	top: 40%;
-	// left: 50vw;
-	// transform: translate(-50vw, -50%);
+
 	max-width: 350px;
+
 	h2 {
 		font-size: 20px;
 	}
@@ -23,7 +23,7 @@
 	button {
 		background-color: var(--accent);
 		border: 0;
-		color: var(--editor-main-text);
+		color: #f5f5f5;
 		padding: 0.5rem;
 		border-radius: 5px;
 		&:hover,
@@ -32,16 +32,23 @@
 			cursor: pointer;
 		}
 	}
-	&::backdrop {
-		background-image: rgba(0, 0, 0, 1);
-		opacity: 1;
-		// background-image: linear-gradient(
-		// 	45deg,
-		// 	magenta,
-		// 	rebeccapurple,
-		// 	dodgerblue,
-		// 	green
-		// );
-		// opacity: 0;
+	.deleteDialog__negativeBtn {
+		position: absolute;
+		top: 5%;
+		right: 5%;
+		background-color: transparent;
+		width: fit-content;
+		height: fit-content;
+		aspect-ratio: 1;
+		display: grid;
+		place-items: center;
+		&:hover,
+		&:focus {
+			background-color: var(--accent);
+			cursor: pointer;
+		}
+		svg {
+			fill: var(--editor-main-text);
+		}
 	}
 }
