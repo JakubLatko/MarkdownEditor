@@ -42,7 +42,7 @@ function handleMenu() {
 	}
 }
 
-function handlePreviewButton() {}
+// function handlePreviewButton() {}
 
 let initialTheme: boolean = false;
 let checkedVar: boolean;
@@ -101,7 +101,7 @@ function createPreview() {
 	splittedLines.forEach((line) => {
 		fileContent.push(line.split(" "));
 	});
-
+	let links: link[] = [];
 	fileContent.forEach((line) => {
 		switch (line[0]) {
 			case "######":
@@ -184,6 +184,90 @@ function createPreview() {
 				}
 		}
 	});
+
+	interface linkNameObj {
+		lineIndex: number;
+		wordIndex: number;
+	}
+
+	interface link {
+		startingLine: number;
+		startingWord: number;
+		endingLine: number;
+		endingWord: number;
+		text: string;
+		url: string;
+	}
+
+	let linkNameStartsArray: linkNameObj[] = [];
+	let linkNameEndsArray: linkNameObj[] = [];
+	let linkName: string;
+	let urlReady: string;
+	let link: link;
+
+	fileContent.forEach((line, lineIndex) => {
+		let linkPresent: boolean = false;
+		line.forEach((word, wordIndex) => {
+			if (word.includes("[")) {
+				let linkNameObj = {
+					lineIndex,
+					wordIndex,
+				};
+				linkPresent = true;
+				linkNameStartsArray.push(linkNameObj);
+			}
+			if (word.includes("]")) {
+				let linkNameObj = {
+					lineIndex,
+					wordIndex,
+				};
+				linkNameEndsArray.push(linkNameObj);
+			}
+		});
+		if (!linkPresent) return;
+		link = {
+			url: urlReady,
+			text: "",
+			endingLine: 1,
+			endingWord: 1,
+			startingLine: 1,
+			startingWord: 1,
+		};
+		linkNameEndsArray.forEach((linkObj) => {
+			let linkWord = fileContent[linkObj.lineIndex][linkObj.wordIndex];
+			let test = linkWord.split("]");
+			let withoutRightPare = test[1].split(")");
+			urlReady = withoutRightPare[0].replace("(", "");
+			link.url = urlReady;
+			link.endingLine = linkObj.lineIndex;
+			link.endingWord = linkObj.wordIndex;
+		});
+
+		linkNameStartsArray.forEach((element, index) => {
+			let correspondingCloser = linkNameEndsArray[index];
+			if (!correspondingCloser) return;
+			let linkText = fileContent[element.lineIndex].slice(
+				element.wordIndex,
+				correspondingCloser.wordIndex + 1
+			);
+			let finishedName: string[] = [];
+			linkText.forEach((word) => {
+				finishedName.push(word.replace("[", ""));
+			});
+
+			let test = linkText[linkText.length - 1].split("]");
+			finishedName.splice(finishedName.length - 1, 1, test[0]);
+
+			linkName = finishedName.join(" ");
+
+			link.text = linkName;
+			link.startingLine = element.lineIndex;
+			link.startingWord = element.wordIndex;
+		});
+		if (link.url == undefined) return;
+		links.push(link);
+	});
+	console.log(links);
 }
 
 document.addEventListener("DOMContentLoaded", createLocalStorage);
