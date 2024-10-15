@@ -2,11 +2,11 @@ import type { document } from "../types/document";
 import { v4 as uuidv4 } from "uuid";
 import formatDate from "./formatDate";
 export default async function createDocument() {
-	let localStorageRaw = localStorage.getItem("documents");
+	const  localStorageRaw = localStorage.getItem("documents");
 	if (!localStorageRaw) return;
-	let localStorageParsed: document[] = JSON.parse(localStorageRaw);
+	const  localStorageParsed: document[] = JSON.parse(localStorageRaw);
 	const newDate = await formatDate(new Date());
-	let newDoc: document = {
+	const newDoc: document = {
 		id: uuidv4(),
 		title: "untitled-document",
 		createdAt: newDate,

@@ -11,8 +11,12 @@ import type { document } from "./types/document";
 // 2. Delete button
 // 3. Preview button
 // 4. By otwieral sie ostatni plik
-// 5.
-
+// 5. codeblocki
+// 6. linki
+// 7. obrazki
+// 8. zagnieżdzone listy
+// 9. horyzontalne przecinanie akapitow
+// 10.
 function handleMenu() {
 	const menu = document.querySelector("aside");
 	const header = document.querySelector("header");
@@ -267,7 +271,7 @@ function createPreview() {
 		if (link.url == undefined) return;
 		links.push(link);
 	});
-	console.log(links);
+	// console.log(links);
 }
 
 document.addEventListener("DOMContentLoaded", createLocalStorage);
